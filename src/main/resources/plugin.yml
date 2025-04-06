@@ -1,0 +1,4 @@
+name: Amalib
+version: '1.0'
+main: net.arnay.amalib.Amalib
+api-version: '1.21'
