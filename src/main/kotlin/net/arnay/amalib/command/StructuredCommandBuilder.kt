@@ -16,10 +16,11 @@ class StructuredCommandBuilder(private val name: String) : Builder<CommandObject
         return value
     }
 
-    fun add(name: String, predicate: (BranchBuilder)): StructuredCommandBuilder
+    fun add(name: String, predicate: (BranchBuilder) -> Unit): StructuredCommandBuilder
     {
-        val branch = branchBuilder.build()
-        nodes.add(branch)
+        val branch = BranchBuilder("name")
+        predicate(branch)
+        nodes.add(branch.build())
         return this
     }
 
@@ -39,10 +40,11 @@ class StructuredCommandBuilder(private val name: String) : Builder<CommandObject
             return value
         }
 
-        fun add(branchBuilder: BranchBuilder): BranchBuilder
+        fun add(name: String, predicate: (BranchBuilder) -> Unit): BranchBuilder
         {
-            val branch = branchBuilder.build()
-            nodes.add(branch)
+            val branch = BranchBuilder("name")
+            predicate(branch)
+            nodes.add(branch.build())
             return this
         }
 

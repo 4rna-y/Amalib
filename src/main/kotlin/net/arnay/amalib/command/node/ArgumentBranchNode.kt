@@ -26,6 +26,7 @@ class ArgumentBranchNode(name: String) : ArgumentNode(name)
 
         return node.execute(sender, args)
     }
+
     fun getNodes(): MutableList<ArgumentNode> = nodes
     fun setNodes(nodes: MutableList<ArgumentNode>)
     {
