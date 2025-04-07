@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender
 
 class ArgumentBranchNode(name: String) : ArgumentNode(name)
 {
-    private val nodes = mutableListOf<ArgumentNode>()
+    private var nodes = mutableListOf<ArgumentNode>()
 
     override fun execute(sender: CommandSender, args: Array<out String>): Boolean
     {
@@ -26,7 +26,9 @@ class ArgumentBranchNode(name: String) : ArgumentNode(name)
 
         return node.execute(sender, args)
     }
-
-    fun addNode(node: ArgumentNode) = nodes.add(node)
     fun getNodes(): MutableList<ArgumentNode> = nodes
+    fun setNodes(nodes: MutableList<ArgumentNode>)
+    {
+        this.nodes = nodes
+    }
 }
