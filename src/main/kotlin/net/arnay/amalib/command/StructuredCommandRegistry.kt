@@ -2,23 +2,24 @@ package net.arnay.amalib.command
 
 import org.bukkit.plugin.java.JavaPlugin
 
+@Suppress("unused")
 object StructuredCommandRegistry
 {
     fun register(
         plugin: JavaPlugin,
-        label: String,
-        vararg subCommandEntries: StructuredSubCommandEntry
+        commandObject: CommandObject
     )
     {
-        val command = plugin.getCommand(label)
+        val command = plugin.getCommand(commandObject.name)
         if (command == null)
         {
-            plugin.slF4JLogger.error("The command $label is not found.")
+            plugin.slF4JLogger.error("The command ${commandObject.name} is not found.")
             return
         }
 
+        command.setExecutor(commandObject.getExecutor())
+        command.tabCompleter = commandObject.getCompleter()
 
-
-        plugin.slF4JLogger.info("The command $label was successfully registered.")
+        plugin.slF4JLogger.info("The command ${commandObject.name} was successfully registered.")
     }
 }
