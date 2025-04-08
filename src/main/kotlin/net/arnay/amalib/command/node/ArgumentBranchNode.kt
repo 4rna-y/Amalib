@@ -24,7 +24,7 @@ class ArgumentBranchNode(name: String) : ArgumentNode(name)
             return false
         }
 
-        return node.execute(sender, args)
+        return node.execute(sender, args.drop(1).toTypedArray())
     }
 
     fun getNodes(): MutableList<ArgumentNode> = nodes

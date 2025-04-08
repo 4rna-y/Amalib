@@ -18,7 +18,8 @@ class StructuredCommandCompleter(private val nodes: MutableList<ArgumentNode>) :
         var currentDepthNodes = nodes
         var idx = 0
 
-        while (idx < args.size - 1) {
+        while (idx < args.size - 1)
+        {
             val input = args[idx]
             val next = currentDepthNodes.find { it.name == input }
 
