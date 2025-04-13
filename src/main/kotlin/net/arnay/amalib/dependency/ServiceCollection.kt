@@ -2,7 +2,6 @@ package net.arnay.amalib.dependency
 
 import net.arnay.amalib.dependency.impl.ServiceCollectionProvider
 import kotlin.reflect.KClass
-import kotlin.reflect.full.primaryConstructor
 
 class ServiceCollection
 {
@@ -10,7 +9,7 @@ class ServiceCollection
 
     inline fun <reified TInterface: Any, reified TImplementation: TInterface> register() : ServiceCollection
     {
-        val ctor = TImplementation::class.primaryConstructor ?:
+        val ctor = TImplementation::class.constructors.firstOrNull() ?:
             throw IllegalArgumentException("Class ${TImplementation::class.simpleName} was not found.")
 
         val args = ctor.parameters.associateWith {
@@ -21,6 +20,15 @@ class ServiceCollection
 
         val instance = ctor.callBy(args)
         services[TInterface::class] = instance
+
+        return this
+    }
+
+    inline fun <reified TInterface: Any, reified TImplementation: TInterface> register(
+        implInstance: () -> TImplementation
+    ) : ServiceCollection
+    {
+        services[TInterface::class] = implInstance()
 
         return this
     }

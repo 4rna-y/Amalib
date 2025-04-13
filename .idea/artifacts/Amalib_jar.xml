@@ -2,13 +2,12 @@
   <artifact type="jar" name="Amalib:jar">
     <output-path>$PROJECT_DIR$/build</output-path>
     <root id="archive" name="Amalib.jar">
-      <element id="module-output" name="net.arnay.Amalib.main" />
-      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.1.20/aa8ca79cd50578314f6d1180c47cbe14c0fee567/kotlin-stdlib-2.1.20.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/2.1.20/3c1003045c4f2a72f987a147abac8e7058be1183/kotlin-reflect-2.1.20.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/2.1.20/1372ceab395defca310ff460dc219364d9df0a2e/kotlin-stdlib-jdk8-2.1.20.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/2.1.20/72672df5e83231744c00550955b10acb71ed49d6/kotlin-stdlib-jdk7-2.1.20.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" path-in-jar="/" />
-      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/plugin.yml" />
+      <element id="module-output" name="Amalib.main" />
+      <element id="extracted-dir" path="C:/gradle/gradle-8.11.1/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/2.1.20/3c1003045c4f2a72f987a147abac8e7058be1183/kotlin-reflect-2.1.20.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/gradle/gradle-8.11.1/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/gradle/gradle-8.11.1/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.1.20/aa8ca79cd50578314f6d1180c47cbe14c0fee567/kotlin-stdlib-2.1.20.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/gradle/gradle-8.11.1/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/2.1.20/1372ceab395defca310ff460dc219364d9df0a2e/kotlin-stdlib-jdk8-2.1.20.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/gradle/gradle-8.11.1/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/2.1.20/72672df5e83231744c00550955b10acb71ed49d6/kotlin-stdlib-jdk7-2.1.20.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

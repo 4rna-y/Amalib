@@ -2,7 +2,6 @@ package net.arnay.amalib.command
 
 import org.bukkit.plugin.java.JavaPlugin
 
-@Suppress("unused")
 object StructuredCommandRegistry
 {
     fun register(
