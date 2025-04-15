@@ -4,8 +4,14 @@ import org.bukkit.plugin.java.JavaPlugin
 
 object StructuredCommandRegistry
 {
+    private lateinit var plugin: JavaPlugin
+
+    fun setPlugin(plugin: JavaPlugin)
+    {
+        this.plugin = plugin
+    }
+
     fun register(
-        plugin: JavaPlugin,
         commandObject: CommandObject
     )
     {
