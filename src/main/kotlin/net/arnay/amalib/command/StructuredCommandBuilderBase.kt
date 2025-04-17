@@ -27,8 +27,7 @@ abstract class StructuredCommandBuilderBase<T>(
         return this
     }
 
-    @PublishedApi
-    internal inline fun <reified TNode: ArgumentExecutorNode> add() : StructuredCommandBuilderBase<T>
+    inline fun <reified TNode: ArgumentExecutorNode> add() : StructuredCommandBuilderBase<T>
     {
         val ctor = TNode::class.constructors.firstOrNull() ?:
             throw IllegalArgumentException("${TNode::class.simpleName} doesn't have any constructor.")
