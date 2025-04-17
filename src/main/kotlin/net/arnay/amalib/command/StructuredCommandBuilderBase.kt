@@ -11,7 +11,7 @@ abstract class StructuredCommandBuilderBase<T>(
     val serviceProvider: ServiceProvider
 ) : Builder<T>
 {
-    internal val nodes = mutableListOf<ArgumentNode>()
+    val nodes = mutableListOf<ArgumentNode>()
 
     fun add(name: String, predicate: (StructuredCommandBuilder.BranchBuilder) -> Unit): StructuredCommandBuilderBase<T>
     {
@@ -27,6 +27,7 @@ abstract class StructuredCommandBuilderBase<T>(
         return this
     }
 
+    @PublishedApi
     internal inline fun <reified TNode: ArgumentExecutorNode> add() : StructuredCommandBuilderBase<T>
     {
         val ctor = TNode::class.constructors.firstOrNull() ?:
