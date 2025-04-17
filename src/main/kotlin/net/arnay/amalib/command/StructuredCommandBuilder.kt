@@ -2,8 +2,12 @@ package net.arnay.amalib.command
 
 import net.arnay.amalib.command.impl.StructuredCommandObject
 import net.arnay.amalib.command.node.ArgumentBranchNode
+import net.arnay.amalib.dependency.ServiceProvider
 
-class StructuredCommandBuilder(name: String) : StructuredCommandBuilderBase<CommandObject>(name)
+class StructuredCommandBuilder(
+    name: String,
+    serviceProvider: ServiceProvider
+) : StructuredCommandBuilderBase<CommandObject>(name, serviceProvider)
 {
     override fun build(): CommandObject
     {
@@ -11,7 +15,7 @@ class StructuredCommandBuilder(name: String) : StructuredCommandBuilderBase<Comm
         return value
     }
 
-    class BranchBuilder(name: String) : StructuredCommandBuilderBase<ArgumentBranchNode>(name)
+    class BranchBuilder(name: String, serviceProvider: ServiceProvider) : StructuredCommandBuilderBase<ArgumentBranchNode>(name, serviceProvider)
     {
         override fun build(): ArgumentBranchNode
         {
