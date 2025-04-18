@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Amalib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Amalib.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/net.arnay.Amalib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/net.arnay.Amalib.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/proj.Amalib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/proj.Amalib.main.iml" />
     </modules>
   </component>
 </project>
