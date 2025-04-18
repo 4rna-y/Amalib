@@ -1,9 +1,10 @@
 package net.arnay.amalib.dependency
 
 import net.arnay.amalib.dependency.impl.ServiceCollectionProvider
+import net.arnay.amalib.shared.Builder
 import kotlin.reflect.KClass
 
-class ServiceCollection
+class ServiceCollection : Builder<ServiceProvider>
 {
     val services = mutableMapOf<KClass<*>, Any>()
 
@@ -33,7 +34,7 @@ class ServiceCollection
         return this
     }
 
-    fun build(): ServiceProvider
+    override fun build(): ServiceProvider
     {
         return ServiceCollectionProvider(services)
     }
