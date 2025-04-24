@@ -15,6 +15,8 @@ class StructuredCommandBuilder(
         return value
     }
 
+    fun configure()
+
     class BranchBuilder(name: String, serviceProvider: ServiceProvider) : StructuredCommandBuilderBase<ArgumentBranchNode>(name, serviceProvider)
     {
         override fun build(): ArgumentBranchNode
@@ -24,5 +26,4 @@ class StructuredCommandBuilder(
             return value
         }
     }
-
 }

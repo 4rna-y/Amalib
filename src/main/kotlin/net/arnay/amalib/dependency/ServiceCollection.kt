@@ -2,6 +2,7 @@ package net.arnay.amalib.dependency
 
 import net.arnay.amalib.dependency.impl.ServiceCollectionProvider
 import net.arnay.amalib.shared.Builder
+import org.slf4j.Logger
 import kotlin.reflect.KClass
 
 @Suppress("unused")
@@ -10,8 +11,15 @@ class ServiceCollection : Builder<ServiceProvider>
     val singletons = mutableMapOf<KClass<*>, Any>()
     val transients = mutableMapOf<KClass<*>, KClass<*>>()
 
+    override fun build(): ServiceProvider
+    {
+        return ServiceCollectionProvider(singletons, transients)
+    }
+
     inline fun <reified TInterface: Any, reified TImplementation: TInterface> addSingleton() : ServiceCollection
     {
+        if (isRegistered(TInterface::class)) throw IllegalArgumentException("Class ${TInterface::class} was already registered")
+
         val ctor = TImplementation::class.constructors.firstOrNull() ?:
             throw IllegalArgumentException("Class ${TImplementation::class.simpleName} was not found.")
 
@@ -46,10 +54,14 @@ class ServiceCollection : Builder<ServiceProvider>
         return this
     }
 
-
-    override fun build(): ServiceProvider
+    fun addLogger(logger: Logger): ServiceCollection
     {
-        return ServiceCollectionProvider(singletons, transients)
+        singletons[Logger::class] = logger
+        return this
     }
+
+
+    fun isRegistered(clazz: KClass<*>): Boolean =
+        singletons.containsKey(clazz) || transients.containsKey(clazz)
 
 }
