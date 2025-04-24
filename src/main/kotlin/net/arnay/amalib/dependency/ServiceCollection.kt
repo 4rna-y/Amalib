@@ -18,7 +18,8 @@ class ServiceCollection : Builder<ServiceProvider>
 
     inline fun <reified TInterface: Any, reified TImplementation: TInterface> addSingleton() : ServiceCollection
     {
-        if (isRegistered(TInterface::class)) throw IllegalArgumentException("Class ${TInterface::class} was already registered")
+        if (singletons.containsKey(TInterface::class) || transients.containsKey(TInterface::class))
+            throw IllegalArgumentException("Class ${TInterface::class} was already registered")
 
         val ctor = TImplementation::class.constructors.firstOrNull() ?:
             throw IllegalArgumentException("Class ${TImplementation::class.simpleName} was not found.")
@@ -59,9 +60,4 @@ class ServiceCollection : Builder<ServiceProvider>
         singletons[Logger::class] = logger
         return this
     }
-
-
-    fun isRegistered(clazz: KClass<*>): Boolean =
-        singletons.containsKey(clazz) || transients.containsKey(clazz)
-
 }
