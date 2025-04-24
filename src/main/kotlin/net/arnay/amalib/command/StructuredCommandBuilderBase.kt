@@ -8,14 +8,15 @@ import kotlin.reflect.KClass
 
 abstract class StructuredCommandBuilderBase<T>(
     internal val name: String,
-    val serviceProvider: ServiceProvider
+    val serviceProvider: ServiceProvider,
+    internal var option: StructuredCommandOption
 ) : Builder<T>
 {
     val nodes = mutableListOf<ArgumentNode>()
 
     fun add(name: String, predicate: (StructuredCommandBuilder.BranchBuilder) -> Unit): StructuredCommandBuilderBase<T>
     {
-        val branch = StructuredCommandBuilder.BranchBuilder(name, serviceProvider)
+        val branch = StructuredCommandBuilder.BranchBuilder(name, serviceProvider, option)
         predicate(branch)
         nodes.add(branch.build())
         return this

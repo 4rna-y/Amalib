@@ -1,11 +1,13 @@
 package net.arnay.amalib.command.node
 
+import net.arnay.amalib.command.StructuredCommandOption
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextComponent
-import net.kyori.adventure.text.format.TextColor
 import org.bukkit.command.CommandSender
 
-class ArgumentBranchNode(name: String) : ArgumentNode(name)
+class ArgumentBranchNode(
+    name: String,
+    private val option: StructuredCommandOption
+) : ArgumentNode(name)
 {
     private var nodes = mutableListOf<ArgumentNode>()
 
@@ -13,14 +15,16 @@ class ArgumentBranchNode(name: String) : ArgumentNode(name)
     {
         if (args.isEmpty())
         {
-            sender.sendMessage(Component.text("Invalid arguments", TextColor.color(255, 255, 0)))
+            sender.sendMessage(
+                Component.text(option.argumentInvalidMessage, option.argumentInvalidColor))
             return false
         }
 
         val node = nodes.find { it.name == args[0] }
         if (node == null)
         {
-            sender.sendMessage(Component.text("Invalid arguments", TextColor.color(255, 255, 0)))
+            sender.sendMessage(
+                Component.text(option.argumentInvalidMessage, option.argumentInvalidColor))
             return false
         }
 
