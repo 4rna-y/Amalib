@@ -13,6 +13,7 @@ class TickCancellationHandler(
         {
             if (scheduler.value.cancelled)
             {
+                scheduler.value.onComplete()
                 schedulers.schedulers.remove(scheduler.key)
                 serverScheduler.cancelTask(scheduler.key)
             }

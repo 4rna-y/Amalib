@@ -1,19 +1,48 @@
 package net.arnay.amalib.dependency
 
+import net.arnay.amalib.command.StructuredCommandRegistry
+import net.arnay.amalib.command.impl.StructuredCommandRegistryImpl
+import net.arnay.amalib.configuration.Configuration
+import net.arnay.amalib.configuration.impl.ConfigurationImpl
 import net.arnay.amalib.dependency.impl.ServiceCollectionProvider
+import net.arnay.amalib.event.EventRegistry
+import net.arnay.amalib.event.impl.EventRegistryImpl
 import net.arnay.amalib.shared.Builder
+import net.arnay.amalib.tick.TickSchedulerRegistry
+import net.arnay.amalib.tick.impl.TickSchedulerRegistryImpl
+import org.bukkit.plugin.java.JavaPlugin
 import org.slf4j.Logger
 import kotlin.reflect.KClass
 
-@Suppress("unused")
-class ServiceCollection : Builder<ServiceProvider>
+@Suppress("unused", "MemberVisibilityCanBePrivate")
+class ServiceCollection(plugin: JavaPlugin) : Builder<ServiceProvider>
 {
-    val singletons = mutableMapOf<KClass<*>, Any>()
+    val singletons = mutableMapOf<KClass<*>, Any>(JavaPlugin::class to plugin)
     val transients = mutableMapOf<KClass<*>, KClass<*>>()
 
     override fun build(): ServiceProvider
     {
         return ServiceCollectionProvider(singletons, transients)
+    }
+
+    fun useStructuredCommand() : ServiceCollection
+    {
+        return addSingleton<StructuredCommandRegistry, StructuredCommandRegistryImpl>()
+    }
+
+    fun useTickScheduler() : ServiceCollection
+    {
+        return addSingleton<TickSchedulerRegistry, TickSchedulerRegistryImpl>()
+    }
+
+    fun useEvent(): ServiceCollection
+    {
+        return addSingleton<EventRegistry, EventRegistryImpl>()
+    }
+
+    fun useConfiguration() : ServiceCollection
+    {
+        return addSingleton<Configuration, ConfigurationImpl>()
     }
 
     inline fun <reified TInterface: Any, reified TImplementation: TInterface> addSingleton() : ServiceCollection
