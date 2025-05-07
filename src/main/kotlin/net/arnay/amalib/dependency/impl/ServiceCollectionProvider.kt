@@ -28,7 +28,7 @@ class ServiceCollectionProvider(
         return getRequiredService(EventRegistry::class)
     }
 
-    override fun getConfiguration(): Configuration
+    override fun getConfiguration(): Configuration<*>
     {
         return getRequiredService(Configuration::class)
     }

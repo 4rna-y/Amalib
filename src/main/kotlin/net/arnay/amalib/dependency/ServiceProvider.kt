@@ -11,7 +11,7 @@ interface ServiceProvider
     fun getStructuredCommandRegistry() : StructuredCommandRegistry
     fun getTickSchedulerRegistry() : TickSchedulerRegistry
     fun getEventRegistry() : EventRegistry
-    fun getConfiguration(): Configuration
+    fun getConfiguration(): Configuration<*>
     fun <TInterface: Any> getRequiredService(clazz: KClass<TInterface>): TInterface
 }
 

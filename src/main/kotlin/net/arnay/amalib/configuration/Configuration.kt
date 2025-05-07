@@ -2,9 +2,9 @@ package net.arnay.amalib.configuration
 
 import kotlin.reflect.KClass
 
-interface Configuration
+interface Configuration<T: Any>
 {
-    fun <T: Any> get(clazz: KClass<T>) : T
+    fun get() : T
+    fun set(supplier: (T) -> Unit)
+    fun reload()
 }
-
-inline fun <reified T: Any> Configuration.get(): T = get(T::class)

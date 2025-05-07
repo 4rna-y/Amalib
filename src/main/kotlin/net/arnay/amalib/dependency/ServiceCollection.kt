@@ -15,7 +15,7 @@ import org.slf4j.Logger
 import kotlin.reflect.KClass
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
-class ServiceCollection(plugin: JavaPlugin) : Builder<ServiceProvider>
+class ServiceCollection(val plugin: JavaPlugin) : Builder<ServiceProvider>
 {
     val singletons = mutableMapOf<KClass<*>, Any>(JavaPlugin::class to plugin)
     val transients = mutableMapOf<KClass<*>, KClass<*>>()
@@ -40,9 +40,12 @@ class ServiceCollection(plugin: JavaPlugin) : Builder<ServiceProvider>
         return addSingleton<EventRegistry, EventRegistryImpl>()
     }
 
-    fun useConfiguration() : ServiceCollection
+    inline fun <reified T: Any> useConfiguration() : ServiceCollection
     {
-        return addSingleton<Configuration, ConfigurationImpl>()
+        return addSingleton<Configuration<T>, ConfigurationImpl<T>>
+        {
+            ConfigurationImpl(plugin, T::class)
+        }
     }
 
     inline fun <reified TInterface: Any, reified TImplementation: TInterface> addSingleton() : ServiceCollection

@@ -6,18 +6,51 @@ import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
-import kotlin.reflect.full.createType
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.primaryConstructor
-import kotlin.reflect.full.withNullability
+import kotlin.reflect.full.*
 import kotlin.reflect.jvm.isAccessible
 import java.lang.reflect.Array as JArray
 
-class ConfigurationImpl(private val plugin: JavaPlugin) : Configuration
+class ConfigurationImpl<T: Any>(private val plugin: JavaPlugin, private val clazz: KClass<T>) : Configuration<T>
 {
-    init { plugin.saveDefaultConfig() }
+    private var configObj: T
 
-    override fun <T : Any> get(clazz: KClass<T>): T
+    init
+    {
+        plugin.saveDefaultConfig()
+        configObj = load(clazz)
+    }
+
+    override fun get() : T
+    {
+        return configObj
+    }
+
+    override fun set(supplier: (T) -> Unit)
+    {
+        supplier(configObj)
+        save()
+    }
+
+    override fun reload()
+    {
+        configObj = load(clazz)
+    }
+
+    private fun save()
+    {
+        val clazz = configObj::class
+        val config = plugin.config
+        for (prop in clazz.memberProperties)
+        {
+            val anno = prop.findAnnotation<ConfigEntry>() ?: continue
+            val value = prop.getter.call(configObj)
+            config.set(anno.propertyName, value)
+        }
+
+        plugin.saveConfig()
+    }
+
+    private fun load(clazz: KClass<T>): T
     {
         plugin.reloadConfig()
         val config = plugin.config
