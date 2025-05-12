@@ -6,9 +6,11 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.reflect.KClass
 
-class EventRegistryImpl : EventRegistry
+class EventRegistryImpl(
+    private val plugin: JavaPlugin
+) : EventRegistry
 {
-    override fun <TEventListener : Listener> register(clazz: KClass<TEventListener>, plugin: JavaPlugin, serviceProvider: ServiceProvider)
+    override fun <TEventListener : Listener> register(clazz: KClass<TEventListener>, serviceProvider: ServiceProvider)
     {
         val ctor = clazz.constructors.firstOrNull() ?:
         throw IllegalArgumentException("${clazz.simpleName} doesn't have any constructor.")

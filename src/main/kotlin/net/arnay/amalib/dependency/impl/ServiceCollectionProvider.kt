@@ -40,23 +40,17 @@ class ServiceCollectionProvider(
         return clazz.cast(value)
     }
 
-    private fun createTransientObject(clazz: KClass<*>): Any
+    private fun createTransientObject(clazz: KClass<*>) : Any
     {
-        val transientType = transients[clazz] ?:
-        throw IllegalArgumentException("Class ${clazz.simpleName} was not registered.")
-        val ctor = transientType.constructors.firstOrNull() ?:
-        throw IllegalArgumentException("Class ${clazz.simpleName} was not found.")
-        val args = ctor.parameters.associateWith {
-            val dependency = it.type.classifier as? KClass<*> ?:
-            throw IllegalArgumentException("${it.name} was invalid.")
-            var res = singletons[dependency]
-            if (res == null)
-                res = transients[dependency] ?: throw IllegalArgumentException("${it.name} was not registered.")
-
-            res
+        val value = transients[clazz] ?: error("${clazz.simpleName} was not found")
+        val ctor  = value.constructors.firstOrNull() ?: error("Primary constructor of Class ${value.simpleName} was not found")
+        val args  = ctor.parameters.associateWith {
+            val paramClass = it.type.classifier as? KClass<*> ?: error("${it.name} was invalid")
+            if (singletons.containsKey(paramClass)) error("Do not inject singleton object to transient object")
+            transients[paramClass] ?: createTransientObject(paramClass)
         }
-
         return ctor.callBy(args)
+
     }
 
 }

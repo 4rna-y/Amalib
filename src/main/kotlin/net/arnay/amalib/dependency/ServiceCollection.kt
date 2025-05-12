@@ -1,15 +1,7 @@
 package net.arnay.amalib.dependency
 
-import net.arnay.amalib.command.StructuredCommandRegistry
-import net.arnay.amalib.command.impl.StructuredCommandRegistryImpl
-import net.arnay.amalib.configuration.Configuration
-import net.arnay.amalib.configuration.impl.ConfigurationImpl
 import net.arnay.amalib.dependency.impl.ServiceCollectionProvider
-import net.arnay.amalib.event.EventRegistry
-import net.arnay.amalib.event.impl.EventRegistryImpl
 import net.arnay.amalib.shared.Builder
-import net.arnay.amalib.tick.TickSchedulerRegistry
-import net.arnay.amalib.tick.impl.TickSchedulerRegistryImpl
 import org.bukkit.plugin.java.JavaPlugin
 import org.slf4j.Logger
 import kotlin.reflect.KClass
@@ -17,73 +9,79 @@ import kotlin.reflect.KClass
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class ServiceCollection(val plugin: JavaPlugin) : Builder<ServiceProvider>
 {
-    val singletons = mutableMapOf<KClass<*>, Any>(JavaPlugin::class to plugin)
-    val transients = mutableMapOf<KClass<*>, KClass<*>>()
+    val singletonEntries = mutableMapOf<KClass<*>, KClass<*>>()
+    val singletons       = mutableMapOf<KClass<*>, Any>(JavaPlugin::class to plugin)
+    val transientEntries = mutableMapOf<KClass<*>, KClass<*>>()
+
+    private val pending = mutableSetOf<KClass<*>>()
 
     override fun build(): ServiceProvider
     {
-        return ServiceCollectionProvider(singletons, transients)
-    }
-
-    fun useStructuredCommand() : ServiceCollection
-    {
-        return addSingleton<StructuredCommandRegistry, StructuredCommandRegistryImpl>()
-    }
-
-    fun useTickScheduler() : ServiceCollection
-    {
-        return addSingleton<TickSchedulerRegistry, TickSchedulerRegistryImpl>()
-    }
-
-    fun useEvent(): ServiceCollection
-    {
-        return addSingleton<EventRegistry, EventRegistryImpl>()
-    }
-
-    inline fun <reified T: Any> useConfiguration() : ServiceCollection
-    {
-        return addSingleton<Configuration<T>, ConfigurationImpl<T>>
+        for ((key, _) in singletonEntries)
         {
-            ConfigurationImpl(plugin, T::class)
+            createSingletonObject(key)
+        }
+
+        return ServiceCollectionProvider(singletons, transientEntries)
+    }
+
+    private fun createSingletonObject(clazz: KClass<*>) : Any
+    {
+        if (!pending.add(clazz)) error("Circular dependency detected at ${clazz.simpleName}")
+        try
+        {
+            val value = singletonEntries[clazz] ?: error("${clazz.simpleName} was not found")
+            val ctor  = value.constructors.firstOrNull() ?: error("Primary constructor of Class ${value.simpleName} was not found")
+            val args  = ctor.parameters.associateWith {
+                val paramClass = it.type.classifier as? KClass<*> ?: error("${it.name} was invalid")
+                if (transientEntries.containsKey(paramClass)) createTransientObject(paramClass)
+                else singletons[paramClass] ?: createSingletonObject(paramClass)
+            }
+            val instance = ctor.callBy(args)
+            singletons[clazz] = instance
+            return instance
+        }
+        finally
+        {
+            pending.remove(clazz)
+        }
+    }
+
+    private fun createTransientObject(clazz: KClass<*>) : Any
+    {
+        if (!pending.add(clazz)) error("Circular dependency detected at ${clazz.simpleName}")
+        try
+        {
+            val value = transientEntries[clazz] ?: error("${clazz.simpleName} was not found")
+            val ctor  = value.constructors.firstOrNull() ?: error("Primary constructor of Class ${value.simpleName} was not found")
+            val args  = ctor.parameters.associateWith {
+                val paramClass = it.type.classifier as? KClass<*> ?: error("${it.name} was invalid")
+                if (singletonEntries.containsKey(paramClass)) error("Do not inject singleton object to transient object")
+                transientEntries[paramClass] ?: createTransientObject(paramClass)
+            }
+            return ctor.callBy(args)
+        }
+        finally
+        {
+            pending.remove(clazz)
         }
     }
 
     inline fun <reified TInterface: Any, reified TImplementation: TInterface> addSingleton() : ServiceCollection
     {
-        if (singletons.containsKey(TInterface::class) || transients.containsKey(TInterface::class))
-            throw IllegalArgumentException("Class ${TInterface::class} was already registered")
-
-        val ctor = TImplementation::class.constructors.firstOrNull() ?:
-            throw IllegalArgumentException("Class ${TImplementation::class.simpleName} was not found.")
-
-        val args = ctor.parameters.associateWith {
-            val dependency = it.type.classifier as? KClass<*> ?:
-                throw IllegalArgumentException("${it.name} was invalid.")
-            var res = singletons[dependency]
-            if (res == null)
-               res = transients[dependency] ?: throw IllegalArgumentException("${it.name} was not registered.")
-
-            res
-        }
-
-        val instance = ctor.callBy(args)
-        singletons[TInterface::class] = instance
-
+        singletonEntries[TInterface::class] = TImplementation::class
         return this
     }
 
-    inline fun <reified TInterface: Any, reified TImplementation: TInterface> addSingleton(
-        implInstance: () -> TImplementation
-    ) : ServiceCollection
+    inline fun <reified TInterface: Any, reified TImplementation: TInterface> addSingleton(implInstance: () -> TImplementation) : ServiceCollection
     {
         singletons[TInterface::class] = implInstance()
-
         return this
     }
 
-    inline fun <reified TInterface: Any, reified TImplementation: TInterface> addTransient(): ServiceCollection
+    inline fun <reified TInterface: Any, reified TImplementation: TInterface> addTransient() : ServiceCollection
     {
-        transients[TInterface::class] = TImplementation::class
+        transientEntries[TInterface::class] = TImplementation::class
         return this
     }
 
